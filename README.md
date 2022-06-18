@@ -19,8 +19,8 @@ class Song extends Resource {
   // Associations are defined in the constructor
   constructor () {
     super()
-    this.artist = new Association({owner: this, belongs_to: Artist, where: (song, artists) => {})
-    this.videos = new Association({owner: this, has_many: Video, where: (song, videos) => {})    
+    this.artist = new Association({owner: this, belongs_to: Artist})
+    this.videos = new Association({owner: this, has_many: Video})
   }
 }
 
@@ -28,10 +28,10 @@ class Song extends Resource {
 class Artist extends Resource {...}
 class Video extends Resource {...}
 
-// Fetch all resources from the API and store them in memory.
+// Download all resources from the API and store them in memory.
 // The promise is stored for the lifetime of the object.
 // To refresh promise (and fetch all resources from API again), pass force as true.
-await Song.fetch(force: false)
+await Song.download(force: false)
 
 // Find a resource.
 var song = await Song.find(id)
@@ -39,8 +39,9 @@ var song = await Song.find(id)
 // Update the attributes of a resource.
 song.name = 'Deja Vu'
 
-// Save a resource (POST or PATCH depending on id existence).
-await song.save()
+// Save a resource into the API (POST or PATCH depending on id existence).
+// Aliased as #save()
+await song.upload()
 ```
 
 ## License
