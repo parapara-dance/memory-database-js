@@ -1,4 +1,4 @@
-'use strict'
+import EventEmitter from 'eventemitter3'
 
 const ENDPOINT_ERROR = new Error('Resource.$endpoint not set')
 const API_ERROR = new Error('Resource.$api not set')
@@ -128,20 +128,17 @@ export class Resource {
   _markedForDeletion = false
 
   /**
-   *
    * @param {any} data
-   * @returns
    */
   update (data = null) {
     if (data == null) return
-
     this.id = data.id
   }
 
   /**
    * Links record with associations.
    */
-  link () {
+  async link () {
     // Should be implemented in subclasses
   }
 

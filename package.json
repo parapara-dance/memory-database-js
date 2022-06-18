@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/parapara-dance/memory-database-js#readme",
   "dependencies": {
-    "@dimensionalpocket/api-client": "github:dimensionalpocket/api-client-js#0.3.0"
+    "@dimensionalpocket/api-client": "github:dimensionalpocket/api-client-js#0.3.0",
+    "eventemitter3": "4.0.7"
   },
   "devDependencies": {
     "@dimensionalpocket/development": "github:dimensionalpocket/development-js#0.6.1",
