@@ -4,6 +4,18 @@ import { Resource } from './Resource.js'
 export class Artist extends Resource {
   static $endpoint = '/artists'
 
+  /** @type {boolean} */
+  static downloading = true
+
+  /** @type {Array<Artist>} */
+  static all = []
+
+  /** @type {Map<id,Artist>} */
+  static $map = new Map()
+
+  /** @type {Promise<Artist>|undefined} */
+  static $promise = undefined
+
   // Data Properties
 
   /** @type {string|undefined} */

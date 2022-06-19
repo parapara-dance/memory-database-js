@@ -1,5 +1,3 @@
-import EventEmitter from 'eventemitter3'
-
 const ENDPOINT_ERROR = new Error('Resource.$endpoint not set')
 const API_ERROR = new Error('Resource.$api not set')
 
@@ -9,23 +7,45 @@ const API_ERROR = new Error('Resource.$api not set')
 export class Resource {
   // =========================== CLASS IMPLEMENTATION ===========================
 
-  /** @type {boolean} */
-  static downloading = true
+  /**
+   * @type {boolean}
+   * @abstract
+   */
+  static downloading = false
 
-  /** @type {Array<any>} */
+  /**
+   * @type {Array<any>}
+   * @abstract
+   */
   static all = []
 
-  /** @type {Map<any,any>} */
+  /**
+   * @type {Map<id,any>}
+   * @abstract
+   */
   static $map = new Map()
 
-  /** @type {Promise<any>|undefined} */
+  /**
+   * @type {Promise<any>|undefined}
+   * @abstract
+   */
   static $promise = undefined
 
-  /** @type {string|undefined} */
+  /**
+   * @type {string|undefined}
+   * @abstract
+   */
   static $endpoint = undefined
 
   /** @type {ApiClient|undefined} */
   static $api = undefined
+
+  /**
+   * The name of the property that holds the parent record.
+   *
+   * @type {string|undefined}
+   */
+  static $parentProperty = undefined
 
   /**
    * Downloads all records from the API.
@@ -81,17 +101,23 @@ export class Resource {
   }
 
   /**
-   * @param {any} id
+   * Gets an item already in memory.
+   *
+   * @param {id} id
    */
   static get (id) {
     return this.$map.get(id)
   }
 
   /**
-   * @param {any} id
+   * Same as #get, but downloads data first.
+   *
+   * @param {id} id
+   * @returns {Promise<any>}
    */
-  static find (id) {
-    return this.$map.get(id)
+  static async find (id) {
+    await this.download()
+    return this.get(id)
   }
 
   static reset () {
@@ -124,14 +150,43 @@ export class Resource {
 
   // =========================== INSTANCE IMPLEMENTATION ===========================
 
-  id = null
+  /** @type {id} */
+  id = undefined
+
+  /** @type {boolean} */
   _markedForDeletion = false
+
+  /**
+   * The endpoint of the instance.
+   */
+  endpoint () {
+    /** @type {any} */
+    var klass = this.constructor
+
+    var endpoint = `${klass.$endpoint}/${this.id}`
+
+    if (klass.$parentProperty != null) {
+      // @ts-ignore
+      var parent = this[klass.$parentProperty]
+
+      if (parent != null) {
+        endpoint = `${parent.endpoint()}${endpoint}`
+      }
+    }
+
+    return endpoint
+  }
+
+  upload () {
+
+  }
 
   /**
    * @param {any} data
    */
   update (data = null) {
     if (data == null) return
+
     this.id = data.id
   }
 
