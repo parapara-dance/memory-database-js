@@ -13,7 +13,7 @@ export function itBehavesLikeASubResource (subResourceClass) {
     Resource.upsert({ id: 1 })
     subResourceClass.upsert({ id: 2 })
 
-    expect(subResourceClass.all).to.not.eq(Resource.all)
+    expect(subResourceClass.cached).to.not.eq(Resource.cached)
 
     Resource.reset()
     subResourceClass.reset()

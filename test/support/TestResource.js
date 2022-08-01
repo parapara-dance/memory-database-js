@@ -7,7 +7,7 @@ export class TestResource extends Resource {
   static downloading = true
 
   /** @type {Array<TestResource>} */
-  static all = []
+  static cached = []
 
   /** @type {Map<id,TestResource>} */
   static $map = new Map()
@@ -35,7 +35,7 @@ export class TestResourceWithParent extends Resource {
   static downloading = true
 
   /** @type {Array<TestResourceWithParent>} */
-  static all = []
+  static cached = []
 
   /** @type {Map<id,TestResourceWithParent>} */
   static $map = new Map()

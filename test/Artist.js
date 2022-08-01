@@ -7,14 +7,14 @@ import { itBehavesLikeASubResource } from './shared-examples/it-behaves-like-a-s
 describe('Artist', function () {
   itBehavesLikeASubResource(Artist)
 
-  describe('.download', function () {
+  describe('.all', function () {
     it('downloads data from API and sets Artist instances', async function () {
       Artist.reset()
-      await Artist.download()
+      await Artist.all()
 
-      expect(Artist.all.length).to.eq(3)
+      expect(Artist.cached.length).to.eq(3)
 
-      Artist.all.forEach(t => {
+      Artist.cached.forEach(t => {
         expect(t).to.be.an.instanceOf(Artist)
       })
 

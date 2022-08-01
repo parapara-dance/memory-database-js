@@ -9,7 +9,7 @@ export class VideoSong extends Resource {
   static downloading = true
 
   /** @type {Array<VideoSong>} */
-  static all = []
+  static cached = []
 
   /** @type {Map<id,VideoSong>} */
   static $map = new Map()
@@ -18,10 +18,12 @@ export class VideoSong extends Resource {
    * VideoSong does not have an endpoint where it can download data from.
    * Its data comes from downloading Video records.
    *
-   * @returns {Promise<Video>}
+   * TODO: make a new endpoint for VideoSongs.
+   *
+   * @returns {Promise<Array<object>>}
    */
   static async download () {
-    return await Video.download()
+    return await Video.all()
   }
 
   // Data properties

@@ -1,17 +1,9 @@
-import { Artist } from './src/Artist.js'
-import { Country } from './src/Country.js'
-import { Platform } from './src/Platform.js'
-import { Song } from './src/Song.js'
-import { Stat } from './src/Stat.js'
-import { Video } from './src/Video.js'
-import { VideoSong } from './src/VideoSong.js'
+export { Resource } from './src/Resource.js'
 
-export default {
-  artists: Artist,
-  countries: Country,
-  platforms: Platform,
-  songs: Song,
-  stats: Stat,
-  videos: Video,
-  videoSongs: VideoSong
-}
+export { Artist } from './src/Artist.js'
+export { Country } from './src/Country.js'
+export { Platform } from './src/Platform.js'
+export { Song } from './src/Song.js'
+export { Stat } from './src/Stat.js'
+export { Video } from './src/Video.js'
+export { VideoSong } from './src/VideoSong.js'

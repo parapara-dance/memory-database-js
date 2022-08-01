@@ -17,7 +17,7 @@ export class Resource {
    * @type {Array<any>}
    * @abstract
    */
-  static all = []
+  static cached = []
 
   /**
    * @type {Map<id,any>}
@@ -42,6 +42,7 @@ export class Resource {
 
   /**
    * The name of the property that holds the parent record.
+   * When undefined, item does not have a parent.
    *
    * @type {string|undefined}
    */
@@ -49,8 +50,11 @@ export class Resource {
 
   /**
    * Downloads all records from the API.
+   * Returns the cached array.
+   *
+   * @returns {Promise<Array<object>>}
    */
-  static download (force = false) {
+  static all (force = false) {
     if (this.$endpoint == null) return Promise.reject(ENDPOINT_ERROR)
     if (this.$api == null) return Promise.reject(API_ERROR)
 
@@ -59,17 +63,18 @@ export class Resource {
     // Mark the entire collection for deletion.
     // Updated items will be unmarked.
     // Outdated items will be deleted.
-    this.all.forEach(this.markForDeletion)
+    this.cached.forEach(this.markForDeletion)
 
     this.$promise = this.$api.get(this.$endpoint).then((/** @type {Array<any>} */ itemsFromApi) => {
       itemsFromApi.forEach(this.upsert, this)
       this.prune()
       this.downloading = false
-      return this
+      return this.cached
     })
 
     this.downloading = true
 
+    // @ts-ignore
     return this.$promise
   }
 
@@ -93,15 +98,23 @@ export class Resource {
 
     var item = new this()
     item.update(itemData)
-
-    this.$map.set(item.id, item)
-    this.all.push(item)
+    this.cache(item)
 
     return true
   }
 
   /**
-   * Gets an item already in memory.
+   * Adds an item to the cached collections.
+   *
+   * @param {Resource} item
+   */
+  static cache (item) {
+    this.$map.set(item.id, item)
+    this.cached.push(item)
+  }
+
+  /**
+   * Gets an item from memory. Does not download data.
    *
    * @param {id} id
    */
@@ -110,18 +123,26 @@ export class Resource {
   }
 
   /**
-   * Same as #get, but downloads data first.
+   * Same as #get, but downloads data if resource is not cached.
+   * If a download happens, the object is not cached.
    *
    * @param {id} id
    * @returns {Promise<any>}
    */
   static async find (id) {
-    await this.download()
-    return this.get(id)
+    var object = this.get(id)
+    if (object) {
+      return object
+    }
+
+    object = new this()
+    object.id = id
+
+    return await object.download()
   }
 
   static reset () {
-    this.all = []
+    this.cached = []
     this.$map.clear()
     this.$promise = undefined
     this.downloading = false
@@ -138,7 +159,7 @@ export class Resource {
    * Deletes all items marked for deletion.
    */
   static prune () {
-    this.all.forEach(this.pruneItem)
+    this.cached.forEach(this.pruneItem)
   }
 
   /**
@@ -157,7 +178,7 @@ export class Resource {
   _markedForDeletion = false
 
   /**
-   * The endpoint of the instance.
+   * The endpoint of the single resource.
    */
   endpoint () {
     /** @type {any} */
@@ -177,8 +198,26 @@ export class Resource {
     return endpoint
   }
 
-  upload () {
+  /**
+   * Calls the API to download data on a single resource.
+   * This method does not add the object to memory.
+   */
+  async download () {
+    if (this.id == null) {
+      return null
+    }
 
+    /** @type {any} */
+    var klass = this.constructor
+
+    var data = await klass.$api.get(this.endpoint())
+    this.update(data)
+
+    return this
+  }
+
+  async save () {
+    //
   }
 
   /**
@@ -198,7 +237,7 @@ export class Resource {
   }
 
   /**
-   * Deletes record from memory and removes it from collections.
+   * Deletes record from cached collections.
    * Subclasses should extend this method to unlink associations.
    */
   implode () {
@@ -206,6 +245,6 @@ export class Resource {
     var klass = this.constructor
 
     klass.$map.delete(this.id)
-    klass.all.splice(klass.all.indexOf(this), 1)
+    klass.cached.splice(klass.cached.indexOf(this), 1)
   }
 }

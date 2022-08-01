@@ -7,7 +7,7 @@ export class Stat extends Resource {
   static downloading = true
 
   /** @type {Array<Stat>} */
-  static all = []
+  static cached = []
 
   /** @type {Map<id,Stat>} */
   static $map = new Map()

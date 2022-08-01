@@ -7,7 +7,7 @@ export class Country extends Resource {
   static downloading = true
 
   /** @type {Array<Country>} */
-  static all = []
+  static cached = []
 
   /** @type {Map<id,Country>} */
   static $map = new Map()

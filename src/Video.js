@@ -7,7 +7,7 @@ export class Video extends Resource {
   static downloading = true
 
   /** @type {Array<Video>} */
-  static all = []
+  static cached = []
 
   /** @type {Map<id,Video>} */
   static $map = new Map()

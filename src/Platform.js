@@ -7,7 +7,7 @@ export class Platform extends Resource {
   static downloading = true
 
   /** @type {Array<Platform>} */
-  static all = []
+  static cached = []
 
   /** @type {Map<id,Platform>} */
   static $map = new Map()

@@ -1,32 +1,46 @@
 import { expect } from '@dimensionalpocket/development'
-import database from '../index.js'
+
+import {
+  Artist,
+  Country,
+  Platform,
+  Resource,
+  Song,
+  Stat,
+  Video,
+  VideoSong
+} from '../index.js'
 
 describe('index', function () {
+  it('exports the base resource', function () {
+    expect(Resource).to.exist
+  })
+
   it('exports artists', function () {
-    expect(database.artists.name).to.eq('Artist')
+    expect(Artist).to.exist
   })
 
   it('exports countries', function () {
-    expect(database.countries.name).to.eq('Country')
+    expect(Country).to.exist
   })
 
   it('exports platforms', function () {
-    expect(database.platforms.name).to.eq('Platform')
+    expect(Platform).to.exist
   })
 
   it('exports songs', function () {
-    expect(database.songs.name).to.eq('Song')
+    expect(Song).to.exist
   })
 
   it('exports stats', function () {
-    expect(database.stats.name).to.eq('Stat')
+    expect(Stat).to.exist
   })
 
   it('exports videos', function () {
-    expect(database.videos.name).to.eq('Video')
+    expect(Video).to.exist
   })
 
   it('exports video songs', function () {
-    expect(database.videoSongs.name).to.eq('VideoSong')
+    expect(VideoSong).to.exist
   })
 })

@@ -8,7 +8,7 @@ export class Artist extends Resource {
   static downloading = true
 
   /** @type {Array<Artist>} */
-  static all = []
+  static cached = []
 
   /** @type {Map<id,Artist>} */
   static $map = new Map()

@@ -8,7 +8,7 @@ export class Song extends Resource {
   static downloading = true
 
   /** @type {Array<Song>} */
-  static all = []
+  static cached = []
 
   /** @type {Map<id,Song>} */
   static $map = new Map()
@@ -122,7 +122,7 @@ export class Song extends Resource {
       artist.$events.removeListener('update', this.updateAutocomplete, this)
     }
 
-    await Artist.download()
+    await Artist.all()
     artist = Artist.get(this.artistId)
 
     if (artist == null) return

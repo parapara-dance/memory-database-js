@@ -7,42 +7,37 @@ Vue-friendly in-memory resource database used by the website.
 ## Usage
 
 ```js
+import { Resource, Song } from '@parapara-dance/memory-database'
+import ApiClient from '@dimensionalpocket/api-client' // included in this library
+
 // API client to be used by all resources.
 Resource.$api = new ApiClient(...)
-
-class Song extends Resource {
-  static $endpoint = '/songs'
-  
-  // Resource properties
-  title = null
-  artistId = null
-  
-  // Associations are defined in the constructor
-  constructor () {
-    super()
-    this.artist = new Association({owner: this, belongs_to: Artist})
-    this.videos = new Association({owner: this, has_many: Video})
-  }
-}
-
-// Other resources.
-class Artist extends Resource {...}
-class Video extends Resource {...}
 
 // Download all resources from the API once, and store them in memory.
 // The promise is stored for the lifetime of the object.
 // To refresh promise (and fetch all resources from API again), pass `true` as argument.
-await Song.download()
+// The promise returns an array of objects.
+var songs = await Song.all()
 
-// Get a a resource from memory.
+// Alternatively, if the songs have already been download, you can call the array directly.
+// This array is reactive.
+var songs = Song.cached
+
+// Get a a resource from memory. This does not call the API.
 var song = Song.get(id)
 
-// Alternatively, use #find (async) to call download() before returning the item.
+// Use #find (async) to download the item from the API if it's not available in memory.
+// It returns `null` if the item is not found.
 var song = await Song.find(id)
 
-// Upload (save) a resource into the API (POST or PATCH depending on id existence).
+// Use #fetch (async) to forcibly download the item from the API, even if it exists on memory.
+// It returns `null` if the item is not found.
+var song = await Song.fetch(id)
+
+// Save a resource into the API (POST or PATCH depending on ID existence).
+// Local object will be updated automatically on success.
 song.title = 'Deja Vu'
-await song.upload()
+await song.save()
 ```
 
 ## License
